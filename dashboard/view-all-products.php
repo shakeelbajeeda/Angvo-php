@@ -1,51 +1,12 @@
 <?php
-session_start();
-$user_id = $_SESSION['user']['id'];
+require_once('dashboard-header.php');
 require_once('../php-controllers/database.php');
+$user_id = $_SESSION['user']['id'];
 $sql = "select * from products where user_id = $user_id ;";
 $table = $result = $db->query($sql)->fetchAll();
 ?>
-<?php require_once('dashboard-header.php') ?>
 
 <div class="container">
-    <!-- product update Successfully alert -->
-    <?php if (isset($_SESSION['update'])) { ?>
-        <center>
-            <div class="alert alert-success mt-3 w-50 text-center alert-dismissible fade show" role="alert">
-                <?php echo $_SESSION['update'] ?>
-                <button type="button" class="close btn btn-danger" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        </center>
-    <?php unset($_SESSION['update']);
-    } ?>
-    <!-- delete message alert -->
-    <?php if (isset($_SESSION['delete'])) { ?>
-        <center>
-            <div class="alert alert-success mt-3 w-50 text-center alert-dismissible fade show" role="alert">
-                <?php echo $_SESSION['delete'] ?>
-                <button type="button" class="close btn btn-danger" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        </center>
-    <?php unset($_SESSION['delete']);
-    } ?>
-    <!-- success message alert -->
-    <?php if (isset($_SESSION['success'])) { ?>
-        <center>
-            <div class="alert alert-success mt-3 w-50 text-center alert-dismissible fade show" role="alert">
-                <?php echo $_SESSION['success'] ?>
-                <button type="button" class="close btn btn-danger" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        </center>
-    <?php unset($_SESSION['success']);
-    } ?>
-
-
     <table class="table table-hover">
         <thead>
             <tr>
@@ -73,4 +34,48 @@ $table = $result = $db->query($sql)->fetchAll();
     </table>
 
 </div><br>
+<script>
+    var toastMixin = Swal.mixin({
+        toast: true,
+        icon: 'success',
+        title: 'General Title',
+        animation: false,
+        position: 'top',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+    // add product alert
+    <?php if (isset($_SESSION['success'])) { ?>
+        toastMixin.fire({
+            animation: true,
+            icon: 'success',
+            title: ' <?= $_SESSION['success'] ?>'
+        });
+    <?php unset($_SESSION['success']);
+    } ?>
+
+    // delete product alert
+    <?php if (isset($_SESSION['delete'])) { ?>
+        toastMixin.fire({
+            animation: true,
+            icon: 'success',
+            title: ' <?= $_SESSION['delete'] ?>'
+        });
+    <?php unset($_SESSION['delete']);
+    } ?>
+    //update product alert
+    <?php if (isset($_SESSION['update'])) { ?>
+        toastMixin.fire({
+            animation: true,
+            icon: 'success',
+            title: ' <?= $_SESSION['update'] ?>'
+        });
+    <?php unset($_SESSION['update']);
+    } ?>
+</script>
 <?php require_once('dashboard-footer.php') ?>
