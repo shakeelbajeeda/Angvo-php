@@ -3,8 +3,18 @@ require_once('dashboard-header.php');
 require_once('../php-controllers/database.php');
 $user_id = $_SESSION['user']['id'];
 $sql = "select * from products where user_id = $user_id ;";
-$table = $result = $db->query($sql)->fetchAll();
-?>
+// $table = $result = $db->query($sql)->fetchAll();
+    if (isset($_GET['search'])) {
+        $search = $_GET['search'];
+        $sql = "SELECT * FROM products WHERE icon LIKE '%$search%'";
+        $table = $db->query($sql)->fetchAll();
+       
+        // die();
+    }
+else {
+    $table  = $db->query($sql)->fetchAll();
+}
+?>  
 
 <div class="container">
     <table class="table table-hover">
